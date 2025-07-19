@@ -30,10 +30,11 @@ int userid_next = 0;
 // The following structure is implementation-specific and it's supposed to be unknown
 // to non-privileged users
 typedef struct {
-    bool isAdmin;
-    long userid;
-    char username[MAX_USERNAME_LEN + 1];
-    long setting[SETTINGS_COUNT];
+    bool isAdmin; // 1 byte
+                  // 7 byte passing
+    long userid;  // 8 byte
+    char username[MAX_USERNAME_LEN + 1]; // 40 byte
+    long setting[SETTINGS_COUNT];        // 80 byte // starts at byte 56
 } user_account;
 
 // Simulates an internal store of active user accounts
@@ -80,7 +81,7 @@ bool update_setting(int user_id, const char *index, const char *value) {
         return false;
 
     v = strtol(value, &endptr, 10);
-    if (*endptr || i >= SETTINGS_COUNT)
+    if (*endptr || i < 0 || i >= SETTINGS_COUNT)
         return false;
     accounts[user_id]->setting[i] = v;
     return true;
