@@ -25,10 +25,23 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-      - name: Check GitHub Status
-        # Source of GitHub Action in line 30: 
-        # https://github.com/dduzgun-security/secure-code-game-action
-        uses: dduzgun-security/secure-code-game-action@1c9ed9f1e57d7b8c4e9bfa8013fd54e322214eb4 # v2.0
+      # Method 1
+      - name: Check GitHub Status with curl and jq
+        run: |
+          curl -s https://www.githubstatus.com/api/v2/status.json | jq '.status.description'
+      # Method 2
+      - name: Check GitHub Status with prebuilt github action
+        uses: actions/github-script@v6
         with:
-          who-to-greet: "Jarvis, obviously ..."
-          get-token: "token-4db56ee8-dbec-46f3-96f5-32247695ab9b"
+          script: |
+            const response = await fetch('https://www.githubstatus.com/api/v2/status.json');
+            const data = await response.json();
+            console.log(`GitHub Status: ${data.status.description}`);
+      # Method 3
+      - name: Check GitHub Status with Python
+        run: |
+          python -c "
+          import requests
+          response = requests.get('https://www.githubstatus.com/api/v2/status.json')
+          print('GitHub Status:', response.json()['status']['description'])
+          "
