@@ -15,7 +15,7 @@
 # $ export FLASK_APP=Season-2/Level-4/code.py && export FLASK_ENV=development && export FLASK_DEBUG=0 && flask run
 
 import os
-import re
+import html
 from flask import Flask, request, render_template
 app = Flask(__name__)
 
@@ -36,7 +36,7 @@ planet_data = {
 def index():
     if request.method == 'POST':
         planet = request.form.get('planet')
-        sanitized_planet = re.sub(r'[<>{}[\]]', '', planet if planet else '')
+        sanitized_planet = html.escape(planet)
 
         if sanitized_planet:
             if 'script' in sanitized_planet.lower() :
@@ -44,7 +44,7 @@ def index():
     
             return render_template('details.html', 
                                    planet=sanitized_planet, 
-                                   info=get_planet_info(sanitized_planet))
+                                   info=get_planet_info(sanitized_planet.capitalize()))
         else:
             return '<h2>Please enter a planet name.</h2>'
 
