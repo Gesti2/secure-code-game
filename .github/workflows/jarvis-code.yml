@@ -31,7 +31,7 @@ jobs:
           curl -s https://www.githubstatus.com/api/v2/status.json | jq '.status.description'
       # Method 2
       - name: Check GitHub Status with prebuilt github action
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const response = await fetch('https://www.githubstatus.com/api/v2/status.json');
